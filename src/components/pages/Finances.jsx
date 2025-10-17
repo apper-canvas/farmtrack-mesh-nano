@@ -485,9 +485,9 @@ const handleExportCSV = () => {
                           <h3 className="text-lg font-semibold text-gray-900">
                             {expense.description}
                           </h3>
-                          <span className="px-2 py-1 bg-red-100 text-red-800 text-xs rounded-full">
+<span className="px-2 py-1 bg-red-100 text-red-800 text-xs rounded-full">
                             {expense.category}
-</div>
+                          </span>
                         <div className="flex items-center space-x-4 text-sm text-gray-600">
                           <span className="flex items-center">
                             <ApperIcon name="Calendar" size={14} className="mr-1" />
