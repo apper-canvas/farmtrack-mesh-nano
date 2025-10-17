@@ -1,19 +1,18 @@
-import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import React, { useEffect, useState } from "react";
+import { format, isBefore, isToday, isValid, parseISO } from "date-fns";
+import { toast } from "react-toastify";
+import farmService from "@/services/api/farmService";
+import taskService from "@/services/api/taskService";
+import cropService from "@/services/api/cropService";
+import ApperIcon from "@/components/ApperIcon";
 import Button from "@/components/atoms/Button";
-import Input from "@/components/atoms/Input";
 import Select from "@/components/atoms/Select";
-import Modal from "@/components/molecules/Modal";
+import Input from "@/components/atoms/Input";
 import TaskCard from "@/components/molecules/TaskCard";
+import Modal from "@/components/molecules/Modal";
 import Loading from "@/components/ui/Loading";
 import Error from "@/components/ui/Error";
 import Empty from "@/components/ui/Empty";
-import ApperIcon from "@/components/ApperIcon";
-import taskService from "@/services/api/taskService";
-import farmService from "@/services/api/farmService";
-import cropService from "@/services/api/cropService";
-import { format, isToday, isBefore } from "date-fns";
-import { toast } from "react-toastify";
 
 const Tasks = () => {
   const [tasks, setTasks] = useState([]);
@@ -139,19 +138,22 @@ const Tasks = () => {
     }
   };
 
-  const getTasksByStatus = () => {
+const getTasksByStatus = () => {
     const now = new Date();
     
     return {
-      upcoming: tasks.filter(task => 
-        !task.completed && !isToday(new Date(task.dueDate)) && !isBefore(new Date(task.dueDate), now)
-      ),
-      today: tasks.filter(task => 
-        !task.completed && isToday(new Date(task.dueDate))
-      ),
-      overdue: tasks.filter(task => 
-        !task.completed && isBefore(new Date(task.dueDate), now) && !isToday(new Date(task.dueDate))
-      ),
+      upcoming: tasks.filter(task => {
+        const parsedDate = task.dueDate ? (typeof task.dueDate === 'string' ? parseISO(task.dueDate) : new Date(task.dueDate)) : null;
+        return !task.completed && parsedDate && isValid(parsedDate) && !isToday(parsedDate) && !isBefore(parsedDate, now);
+      }),
+      today: tasks.filter(task => {
+        const parsedDate = task.dueDate ? (typeof task.dueDate === 'string' ? parseISO(task.dueDate) : new Date(task.dueDate)) : null;
+        return !task.completed && parsedDate && isValid(parsedDate) && isToday(parsedDate);
+      }),
+      overdue: tasks.filter(task => {
+        const parsedDate = task.dueDate ? (typeof task.dueDate === 'string' ? parseISO(task.dueDate) : new Date(task.dueDate)) : null;
+        return !task.completed && parsedDate && isValid(parsedDate) && isBefore(parsedDate, now) && !isToday(parsedDate);
+      }),
       completed: tasks.filter(task => task.completed)
     };
   };

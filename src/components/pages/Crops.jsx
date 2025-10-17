@@ -1,18 +1,19 @@
-import React, { useState, useEffect } from "react";
-import Card from "@/components/atoms/Card";
+import React, { useEffect, useState } from "react";
+import { differenceInDays, format, isValid, parseISO } from "date-fns";
+import { toast } from "react-toastify";
+import farmService from "@/services/api/farmService";
+import cropService from "@/services/api/cropService";
+import ApperIcon from "@/components/ApperIcon";
 import Button from "@/components/atoms/Button";
-import Input from "@/components/atoms/Input";
+import Card from "@/components/atoms/Card";
 import Select from "@/components/atoms/Select";
 import Badge from "@/components/atoms/Badge";
+import Input from "@/components/atoms/Input";
 import Modal from "@/components/molecules/Modal";
+import Farms from "@/components/pages/Farms";
 import Loading from "@/components/ui/Loading";
 import Error from "@/components/ui/Error";
 import Empty from "@/components/ui/Empty";
-import ApperIcon from "@/components/ApperIcon";
-import cropService from "@/services/api/cropService";
-import farmService from "@/services/api/farmService";
-import { format, differenceInDays } from "date-fns";
-import { toast } from "react-toastify";
 
 const Crops = () => {
   const [crops, setCrops] = useState([]);
@@ -131,7 +132,7 @@ const Crops = () => {
     }
   };
 
-  const getStatusBadge = (status) => {
+const getStatusBadge = (status) => {
     const variants = {
       growing: { variant: "success", label: "Growing" },
       flowering: { variant: "warning", label: "Flowering" },
@@ -140,11 +141,13 @@ const Crops = () => {
     };
     return variants[status] || { variant: "default", label: status };
   };
-
   const getDaysToHarvest = (harvestDate) => {
-    const days = differenceInDays(new Date(harvestDate), new Date());
+    if (!harvestDate) return 'N/A';
+    const parsedDate = typeof harvestDate === 'string' ? parseISO(harvestDate) : new Date(harvestDate);
+    if (!isValid(parsedDate)) return 'N/A';
+    
+    const days = differenceInDays(parsedDate, new Date());
     if (days < 0) return "Past due";
-    if (days === 0) return "Today";
     return `${days} days`;
   };
 
@@ -243,7 +246,7 @@ const Crops = () => {
                   </Badge>
                 </div>
 
-                <div className="space-y-2">
+<div className="space-y-2">
                   <div className="flex items-center text-sm text-gray-600">
                     <ApperIcon name="MapPin" size={14} className="mr-2" />
                     {getFarmName(crop.farmId)}
@@ -251,20 +254,24 @@ const Crops = () => {
                   
                   <div className="flex items-center text-sm text-gray-600">
                     <ApperIcon name="Calendar" size={14} className="mr-2" />
-                    Planted: {format(new Date(crop.plantingDate), 'MMM d, yyyy')}
+                    Planted: {(() => {
+                      if (!crop.plantingDate) return 'N/A';
+                      const parsedDate = typeof crop.plantingDate === 'string' ? parseISO(crop.plantingDate) : new Date(crop.plantingDate);
+                      return isValid(parsedDate) ? format(parsedDate, 'MMM d, yyyy') : 'Invalid date';
+                    })()}
                   </div>
-                  
+
                   <div className="flex items-center text-sm text-gray-600">
-                    <ApperIcon name="Harvest" size={14} className="mr-2" />
+                    <ApperIcon name="Maximize2" size={14} className="mr-2" />
                     Area: {crop.areaPlanted} acres
                   </div>
                 </div>
 
                 {crop.expectedHarvestDate && crop.status !== 'harvested' && (
                   <div className="bg-gray-50 rounded-button p-3">
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm text-gray-600">Harvest in:</span>
-                      <span className="font-medium text-gray-900">
+                    <div className="flex justify-between items-center text-sm">
+                      <span className="text-gray-600">Days to Harvest:</span>
+                      <span className="font-semibold text-gray-900">
                         {getDaysToHarvest(crop.expectedHarvestDate)}
                       </span>
                     </div>

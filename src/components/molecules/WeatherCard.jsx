@@ -1,29 +1,34 @@
 import React from "react";
-import Card from "@/components/atoms/Card";
+import { isValid, parseISO } from "date-fns";
 import ApperIcon from "@/components/ApperIcon";
+import Badge from "@/components/atoms/Badge";
+import Card from "@/components/atoms/Card";
+
+const getWeatherIcon = (condition) => {
+  const iconMap = {
+    sunny: "Sun",
+    cloudy: "Cloud",
+    rainy: "CloudRain",
+    stormy: "CloudLightning",
+    snowy: "CloudSnow",
+    foggy: "CloudFog"
+  };
+  return iconMap[condition] || "Sun";
+};
+
+const formatDate = (dateString) => {
+  if (!dateString) return 'Invalid date';
+  const date = typeof dateString === 'string' ? parseISO(dateString) : new Date(dateString);
+  if (!isValid(date)) return 'Invalid date';
+  
+  return date.toLocaleDateString('en-US', { 
+    weekday: 'short', 
+    month: 'short', 
+    day: 'numeric' 
+  });
+};
 
 const WeatherCard = ({ weather, isToday = false }) => {
-  const getWeatherIcon = (condition) => {
-    const iconMap = {
-      sunny: "Sun",
-      cloudy: "Cloud",
-      rainy: "CloudRain",
-      stormy: "CloudLightning",
-      snowy: "CloudSnow",
-      foggy: "CloudFog"
-    };
-    return iconMap[condition] || "Sun";
-  };
-
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { 
-      weekday: 'short', 
-      month: 'short', 
-      day: 'numeric' 
-    });
-  };
-
   return (
     <Card className={`p-4 text-center ${isToday ? 'ring-2 ring-primary' : ''}`}>
       <p className="text-sm text-gray-600 mb-2">

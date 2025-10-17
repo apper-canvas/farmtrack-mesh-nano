@@ -1,11 +1,13 @@
 import React from "react";
 import { motion } from "framer-motion";
-import Card from "@/components/atoms/Card";
-import Badge from "@/components/atoms/Badge";
+import { format, isValid, parseISO } from "date-fns";
 import ApperIcon from "@/components/ApperIcon";
-import { format } from "date-fns";
+import Badge from "@/components/atoms/Badge";
+import Card from "@/components/atoms/Card";
 
 const TaskCard = ({ task, onToggleComplete, onEdit, onDelete }) => {
+  if (!task) return null;
+  
   const getPriorityBadge = (priority) => {
     const variants = {
       high: { variant: "error", icon: "AlertTriangle" },
@@ -14,10 +16,13 @@ const TaskCard = ({ task, onToggleComplete, onEdit, onDelete }) => {
     };
     return variants[priority] || variants.low;
   };
-
-  const isOverdue = new Date(task.dueDate) < new Date() && !task.completed;
-  const isToday = format(new Date(task.dueDate), 'yyyy-MM-dd') === format(new Date(), 'yyyy-MM-dd');
-
+  
+  const parsedDueDate = task.dueDate ? (typeof task.dueDate === 'string' ? parseISO(task.dueDate) : new Date(task.dueDate)) : null;
+  const isValidDueDate = parsedDueDate && isValid(parsedDueDate);
+  
+  const isOverdue = isValidDueDate && parsedDueDate < new Date() && !task.completed;
+  const isToday = isValidDueDate && format(parsedDueDate, 'yyyy-MM-dd') === format(new Date(), 'yyyy-MM-dd');
+  
   const priorityBadge = getPriorityBadge(task.priority);
 
   return (
@@ -51,18 +56,16 @@ const TaskCard = ({ task, onToggleComplete, onEdit, onDelete }) => {
           </div>
 
           <div className="flex items-center justify-between text-sm">
-            <div className="flex items-center text-gray-500">
-              <ApperIcon name="Calendar" size={14} className="mr-1" />
-              <span className={isOverdue ? 'text-error font-medium' : isToday ? 'text-warning font-medium' : ''}>
-                {format(new Date(task.dueDate), 'MMM d, yyyy')}
-              </span>
+            <div className="flex items-center text-gray-600">
+              <ApperIcon name="Calendar" size={16} className="mr-1" />
+              {isValidDueDate ? format(parsedDueDate, 'MMM d, yyyy') : 'Invalid date'}
               {isOverdue && <span className="ml-1 text-error">(Overdue)</span>}
               {isToday && !isOverdue && <span className="ml-1 text-warning">(Today)</span>}
             </div>
             
             <div className="flex items-center space-x-2">
               <button
-                onClick={() => onToggleComplete(task.Id)}
+                onClick={() => onToggleComplete(task.id)}
                 className="p-1 hover:bg-gray-100 rounded transition-colors"
               >
                 <ApperIcon 
@@ -78,7 +81,7 @@ const TaskCard = ({ task, onToggleComplete, onEdit, onDelete }) => {
                 <ApperIcon name="Edit2" size={14} className="text-gray-400 hover:text-gray-600" />
               </button>
               <button
-                onClick={() => onDelete(task.Id)}
+                onClick={() => onDelete(task.id)}
                 className="p-1 hover:bg-gray-100 rounded transition-colors"
               >
                 <ApperIcon name="Trash2" size={14} className="text-gray-400 hover:text-error" />

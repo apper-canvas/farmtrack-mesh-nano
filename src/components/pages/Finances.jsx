@@ -1,22 +1,22 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useMemo, useState } from "react";
+import { format, isValid, parseISO } from "date-fns";
+import { toast } from "react-toastify";
+import Chart from "react-apexcharts";
 import { motion, AnimatePresence } from "framer-motion";
+import farmService from "@/services/api/farmService";
+import incomeService from "@/services/api/incomeService";
+import cropService from "@/services/api/cropService";
+import expenseService from "@/services/api/expenseService";
+import ApperIcon from "@/components/ApperIcon";
 import Button from "@/components/atoms/Button";
-import Input from "@/components/atoms/Input";
 import Select from "@/components/atoms/Select";
 import Card from "@/components/atoms/Card";
+import Input from "@/components/atoms/Input";
 import Modal from "@/components/molecules/Modal";
 import StatCard from "@/components/molecules/StatCard";
 import Loading from "@/components/ui/Loading";
 import Error from "@/components/ui/Error";
 import Empty from "@/components/ui/Empty";
-import ApperIcon from "@/components/ApperIcon";
-import expenseService from "@/services/api/expenseService";
-import incomeService from "@/services/api/incomeService";
-import farmService from "@/services/api/farmService";
-import cropService from "@/services/api/cropService";
-import { format } from "date-fns";
-import { toast } from "react-toastify";
-import Chart from "react-apexcharts";
 
 const Finances = () => {
   const [expenses, setExpenses] = useState([]);
@@ -211,30 +211,35 @@ const Finances = () => {
     }
   };
 
-  const handleExportCSV = () => {
+const handleExportCSV = () => {
     try {
       // Combine expenses and income into unified dataset
       const combinedData = [
-        ...expenses.map(expense => ({
-          type: 'Expense',
-          date: format(new Date(expense.date), 'yyyy-MM-dd'),
-          category: expense.category,
-          description: expense.description,
-          amount: expense.amount,
-          farm: farms.find(f => f.Id === expense.farmId)?.name || '',
-          crop: ''
-        })),
-        ...income.map(inc => ({
-type: 'Income',
-          date: format(new Date(inc.date), 'yyyy-MM-dd'),
-          category: 'Harvest',
-          description: `${inc.quantity} units @ $${inc.pricePerUnit}/unit`,
-          amount: inc.quantity * inc.pricePerUnit,
-          farm: farms.find(f => f.Id === inc.farmId)?.name || '',
-          crop: crops.find(c => c.Id === inc.cropId)?.name || ''
-        }))
+        ...expenses.map(expense => {
+          const parsedDate = expense.date ? (typeof expense.date === 'string' ? parseISO(expense.date) : new Date(expense.date)) : null;
+          return {
+            type: 'Expense',
+            date: parsedDate && isValid(parsedDate) ? format(parsedDate, 'yyyy-MM-dd') : 'Invalid date',
+            category: expense.category,
+            description: expense.description,
+            amount: expense.amount,
+            farm: farms.find(f => f.Id === expense.farmId)?.name || '',
+            crop: ''
+          };
+        }),
+        ...income.map(inc => {
+          const parsedDate = inc.date ? (typeof inc.date === 'string' ? parseISO(inc.date) : new Date(inc.date)) : null;
+          return {
+            type: 'Income',
+            date: parsedDate && isValid(parsedDate) ? format(parsedDate, 'yyyy-MM-dd') : 'Invalid date',
+            category: 'Harvest',
+            description: `${inc.quantity} units @ $${inc.pricePerUnit}/unit`,
+            amount: inc.quantity * inc.pricePerUnit,
+            farm: farms.find(f => f.Id === inc.farmId)?.name || '',
+            crop: crops.find(c => c.Id === inc.cropId)?.name || ''
+          };
+        })
       ];
-
       // Create CSV content with headers
       const headers = ['Type', 'Date', 'Category', 'Description', 'Amount', 'Farm', 'Crop'];
       const csvContent = [
@@ -417,9 +422,13 @@ type: 'Income',
                 {expenses.slice(0, 5).map((expense) => (
                   <div key={expense.Id} className="flex justify-between items-center py-3 border-b border-gray-100 last:border-0">
                     <div>
-                      <p className="font-medium text-gray-900">{expense.description}</p>
+<p className="font-medium text-gray-900">{expense.description}</p>
                       <p className="text-sm text-gray-600">
-                        {expense.category} • {format(new Date(expense.date), 'MMM d, yyyy')}
+                        {expense.category} • {(() => {
+                          if (!expense.date) return 'N/A';
+                          const parsedDate = typeof expense.date === 'string' ? parseISO(expense.date) : new Date(expense.date);
+                          return isValid(parsedDate) ? format(parsedDate, 'MMM d, yyyy') : 'Invalid date';
+                        })()}
                       </p>
                     </div>
                     <span className="font-semibold text-error">
@@ -478,12 +487,15 @@ type: 'Income',
                           </h3>
                           <span className="px-2 py-1 bg-red-100 text-red-800 text-xs rounded-full">
                             {expense.category}
-                          </span>
-                        </div>
+</div>
                         <div className="flex items-center space-x-4 text-sm text-gray-600">
                           <span className="flex items-center">
                             <ApperIcon name="Calendar" size={14} className="mr-1" />
-                            {format(new Date(expense.date), 'MMM d, yyyy')}
+                            {(() => {
+                              if (!expense.date) return 'N/A';
+                              const parsedDate = typeof expense.date === 'string' ? parseISO(expense.date) : new Date(expense.date);
+                              return isValid(parsedDate) ? format(parsedDate, 'MMM d, yyyy') : 'Invalid date';
+                            })()}
                           </span>
                           {expense.farmId && (
                             <span className="flex items-center">
@@ -492,6 +504,7 @@ type: 'Income',
                             </span>
                           )}
                         </div>
+                      </div>
                       </div>
                       <div className="flex items-center space-x-4">
                         <span className="text-2xl font-bold text-error">
@@ -546,12 +559,16 @@ type: 'Income',
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
                         <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                          {getCropName(incomeItem.cropId)}
+{getCropName(incomeItem.cropId)}
                         </h3>
                         <div className="flex items-center space-x-4 text-sm text-gray-600 mb-2">
                           <span className="flex items-center">
                             <ApperIcon name="Calendar" size={14} className="mr-1" />
-                            {format(new Date(incomeItem.date), 'MMM d, yyyy')}
+                            {(() => {
+                              if (!incomeItem.date) return 'N/A';
+                              const parsedDate = typeof incomeItem.date === 'string' ? parseISO(incomeItem.date) : new Date(incomeItem.date);
+                              return isValid(parsedDate) ? format(parsedDate, 'MMM d, yyyy') : 'Invalid date';
+                            })()}
                           </span>
                           <span className="flex items-center">
                             <ApperIcon name="Package" size={14} className="mr-1" />

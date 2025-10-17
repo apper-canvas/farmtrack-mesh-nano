@@ -1,19 +1,20 @@
-import React, { useState, useEffect } from "react";
-import StatCard from "@/components/molecules/StatCard";
-import WeatherCard from "@/components/molecules/WeatherCard";
-import TaskCard from "@/components/molecules/TaskCard";
+import React, { useEffect, useState } from "react";
+import { format, isBefore, isToday, isValid, parseISO } from "date-fns";
+import { toast } from "react-toastify";
+import farmService from "@/services/api/farmService";
+import weatherService from "@/services/api/weatherService";
+import taskService from "@/services/api/taskService";
+import incomeService from "@/services/api/incomeService";
+import cropService from "@/services/api/cropService";
+import expenseService from "@/services/api/expenseService";
+import ApperIcon from "@/components/ApperIcon";
 import Card from "@/components/atoms/Card";
+import WeatherCard from "@/components/molecules/WeatherCard";
+import StatCard from "@/components/molecules/StatCard";
+import Tasks from "@/components/pages/Tasks";
+import Weather from "@/components/pages/Weather";
 import Loading from "@/components/ui/Loading";
 import Error from "@/components/ui/Error";
-import ApperIcon from "@/components/ApperIcon";
-import farmService from "@/services/api/farmService";
-import cropService from "@/services/api/cropService";
-import taskService from "@/services/api/taskService";
-import expenseService from "@/services/api/expenseService";
-import incomeService from "@/services/api/incomeService";
-import weatherService from "@/services/api/weatherService";
-import { format, isToday, isBefore } from "date-fns";
-import { toast } from "react-toastify";
 
 const Dashboard = () => {
   const [farms, setFarms] = useState([]);
@@ -73,21 +74,27 @@ const Dashboard = () => {
   if (loading) return <Loading />;
   if (error) return <Error message={error} onRetry={loadDashboardData} />;
 
-  const totalExpenses = expenses.reduce((sum, expense) => sum + expense.amount, 0);
+const totalExpenses = expenses.reduce((sum, expense) => sum + expense.amount, 0);
   const totalIncome = income.reduce((sum, inc) => sum + inc.totalAmount, 0);
   const netProfit = totalIncome - totalExpenses;
+
+  const todayTasks = tasks.filter(task => {
+    if (!task.dueDate) return false;
+    const parsedDate = typeof task.dueDate === 'string' ? parseISO(task.dueDate) : new Date(task.dueDate);
+    return !task.completed && isValid(parsedDate) && isToday(parsedDate);
+  });
   
-  const todayTasks = tasks.filter(task => 
-    !task.completed && isToday(new Date(task.dueDate))
-  );
-  
-  const overdueTasks = tasks.filter(task => 
-    !task.completed && isBefore(new Date(task.dueDate), new Date()) && !isToday(new Date(task.dueDate))
-  );
-  
-  const upcomingTasks = tasks.filter(task => 
-    !task.completed && !isToday(new Date(task.dueDate)) && !isBefore(new Date(task.dueDate), new Date())
-  ).slice(0, 3);
+  const overdueTasks = tasks.filter(task => {
+    if (!task.dueDate) return false;
+    const parsedDate = typeof task.dueDate === 'string' ? parseISO(task.dueDate) : new Date(task.dueDate);
+    return !task.completed && isValid(parsedDate) && isBefore(parsedDate, new Date()) && !isToday(parsedDate);
+  });
+
+  const upcomingTasks = tasks.filter(task => {
+    if (!task.dueDate) return false;
+    const parsedDate = typeof task.dueDate === 'string' ? parseISO(task.dueDate) : new Date(task.dueDate);
+    return !task.completed && isValid(parsedDate) && !isToday(parsedDate) && !isBefore(parsedDate, new Date());
+  }).slice(0, 3);
 
   const activeCrops = crops.filter(crop => crop.status === 'growing' || crop.status === 'flowering');
 
@@ -199,24 +206,26 @@ const Dashboard = () => {
               <p>No upcoming tasks scheduled</p>
             </div>
           ) : (
-            <div className="space-y-3">
+<div className="space-y-3">
               {upcomingTasks.map(task => (
                 <div key={task.Id} className="flex items-center justify-between p-3 bg-gray-50 rounded-button">
                   <div className="flex-1">
-                    <p className="font-medium text-gray-900">{task.title}</p>
-                    <p className="text-sm text-gray-600">
-                      Due: {format(new Date(task.dueDate), 'MMM d, yyyy')}
+                    <p className="text-sm text-gray-600">{task.description}</p>
+                    <p className="text-xs text-gray-500 mt-1">
+                      Due: {(() => {
+                        if (!task.dueDate) return 'N/A';
+                        const parsedDate = typeof task.dueDate === 'string' ? parseISO(task.dueDate) : new Date(task.dueDate);
+                        return isValid(parsedDate) ? format(parsedDate, 'MMM d, yyyy') : 'Invalid date';
+                      })()}
                     </p>
                   </div>
-                  <div className="text-right">
-                    <span className={`text-xs px-2 py-1 rounded-full ${
-                      task.priority === 'high' ? 'bg-red-100 text-red-800' :
-                      task.priority === 'medium' ? 'bg-yellow-100 text-yellow-800' :
-                      'bg-blue-100 text-blue-800'
-                    }`}>
-                      {task.priority}
-                    </span>
-                  </div>
+                  <span className={`text-xs px-2 py-1 rounded-full ${
+                    task.priority === 'high' ? 'bg-red-100 text-red-800' :
+                    task.priority === 'medium' ? 'bg-yellow-100 text-yellow-800' :
+                    'bg-blue-100 text-blue-800'
+                  }`}>
+                    {task.priority}
+                  </span>
                 </div>
               ))}
             </div>
