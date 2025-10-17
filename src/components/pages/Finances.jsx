@@ -279,8 +279,8 @@ const handleExportCSV = () => {
     return crop ? `${crop.cropName} - ${crop.variety}` : "Unknown Crop";
   };
 
-  const totalExpenses = expenses.reduce((sum, expense) => sum + expense.amount, 0);
-  const totalIncome = income.reduce((sum, inc) => sum + inc.totalAmount, 0);
+const totalExpenses = expenses.reduce((sum, expense) => sum + (expense.amount ?? 0), 0);
+  const totalIncome = income.reduce((sum, inc) => sum + (inc.totalAmount ?? 0), 0);
   const netProfit = totalIncome - totalExpenses;
 
   // Chart data
@@ -431,8 +431,8 @@ const handleExportCSV = () => {
                         })()}
                       </p>
                     </div>
-                    <span className="font-semibold text-error">
-                      -${expense.amount.toLocaleString()}
+<span className="font-semibold text-error">
+                      -${(expense.amount ?? 0).toLocaleString()}
                     </span>
                   </div>
                 ))}
@@ -507,8 +507,8 @@ const handleExportCSV = () => {
                       </div>
                       </div>
                       <div className="flex items-center space-x-4">
-                        <span className="text-2xl font-bold text-error">
-                          ${expense.amount.toLocaleString()}
+<span className="text-2xl font-bold text-error">
+                          ${(expense.amount ?? 0).toLocaleString()}
                         </span>
                         <div className="flex space-x-2">
                           <Button
