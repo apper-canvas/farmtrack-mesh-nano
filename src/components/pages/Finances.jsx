@@ -455,7 +455,7 @@ const totalExpenses = expenses.reduce((sum, expense) => sum + (expense.amount ??
                       </p>
                     </div>
                     <span className="font-semibold text-success">
-                      +${incomeItem.totalAmount.toLocaleString()}
++${incomeItem.total_amount_c?.toLocaleString() ?? '0'}
                     </span>
                   </div>
                 ))}
