@@ -1,0 +1,38 @@
+[
+  {
+    "Id": 1,
+    "date": "2024-12-02",
+    "cropId": "5",
+    "quantity": 500,
+    "pricePerUnit": 2.50,
+    "totalAmount": 1250.00,
+    "buyer": "Local Farmers Market"
+  },
+  {
+    "Id": 2,
+    "date": "2024-12-08",
+    "cropId": "1",
+    "quantity": 200,
+    "pricePerUnit": 4.25,
+    "totalAmount": 850.00,
+    "buyer": "Green Valley Co-op"
+  },
+  {
+    "Id": 3,
+    "date": "2024-12-10",
+    "cropId": "2",
+    "quantity": 150,
+    "pricePerUnit": 3.75,
+    "totalAmount": 562.50,
+    "buyer": "Restaurant Supply Co"
+  },
+  {
+    "Id": 4,
+    "date": "2024-12-14",
+    "cropId": "6",
+    "quantity": 300,
+    "pricePerUnit": 1.80,
+    "totalAmount": 540.00,
+    "buyer": "Organic Market Chain"
+  }
+]

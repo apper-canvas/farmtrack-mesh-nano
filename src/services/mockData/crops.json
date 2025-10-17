@@ -1,0 +1,68 @@
+[
+  {
+    "Id": 1,
+    "farmId": "1",
+    "cropName": "Corn",
+    "variety": "Sweet Corn Golden Bantam",
+    "plantingDate": "2024-04-15",
+    "expectedHarvestDate": "2024-08-15",
+    "areaPlanted": 75,
+    "status": "growing",
+    "notes": "Planted in north field, good germination rate"
+  },
+  {
+    "Id": 2,
+    "farmId": "1",
+    "cropName": "Tomatoes",
+    "variety": "Beefsteak Hybrid",
+    "plantingDate": "2024-05-01",
+    "expectedHarvestDate": "2024-09-01",
+    "areaPlanted": 45,
+    "status": "growing",
+    "notes": "Greenhouse started, transplanted to field"
+  },
+  {
+    "Id": 3,
+    "farmId": "2",
+    "cropName": "Almonds",
+    "variety": "Nonpareil",
+    "plantingDate": "2024-01-15",
+    "expectedHarvestDate": "2024-09-30",
+    "areaPlanted": 120,
+    "status": "flowering",
+    "notes": "Second year trees, expecting moderate yield"
+  },
+  {
+    "Id": 4,
+    "farmId": "2",
+    "cropName": "Apples",
+    "variety": "Gala",
+    "plantingDate": "2024-02-01",
+    "expectedHarvestDate": "2024-10-15",
+    "areaPlanted": 60,
+    "status": "growing",
+    "notes": "Young orchard, third year production"
+  },
+  {
+    "Id": 5,
+    "farmId": "3",
+    "cropName": "Lettuce",
+    "variety": "Romaine",
+    "plantingDate": "2024-06-01",
+    "expectedHarvestDate": "2024-08-01",
+    "areaPlanted": 25,
+    "status": "harvested",
+    "notes": "Excellent yield, organic certification"
+  },
+  {
+    "Id": 6,
+    "farmId": "3",
+    "cropName": "Carrots",
+    "variety": "Nantes",
+    "plantingDate": "2024-05-15",
+    "expectedHarvestDate": "2024-09-15",
+    "areaPlanted": 30,
+    "status": "growing",
+    "notes": "Direct seeded, good soil preparation"
+  }
+]

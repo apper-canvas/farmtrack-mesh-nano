@@ -1,0 +1,68 @@
+[
+  {
+    "Id": 1,
+    "title": "Water corn field",
+    "description": "Deep watering for the corn crop in north field",
+    "farmId": "1",
+    "cropId": "1",
+    "dueDate": "2024-12-20",
+    "priority": "high",
+    "completed": false,
+    "completedAt": null
+  },
+  {
+    "Id": 2,
+    "title": "Apply fertilizer to tomatoes",
+    "description": "Organic fertilizer application for better fruit development",
+    "farmId": "1",
+    "cropId": "2",
+    "dueDate": "2024-12-22",
+    "priority": "medium",
+    "completed": false,
+    "completedAt": null
+  },
+  {
+    "Id": 3,
+    "title": "Prune almond trees",
+    "description": "Winter pruning for better air circulation and sunlight",
+    "farmId": "2",
+    "cropId": "3",
+    "dueDate": "2024-12-18",
+    "priority": "medium",
+    "completed": true,
+    "completedAt": "2024-12-17T14:30:00Z"
+  },
+  {
+    "Id": 4,
+    "title": "Inspect apple trees for pests",
+    "description": "Check for aphids and scale insects",
+    "farmId": "2",
+    "cropId": "4",
+    "dueDate": "2024-12-19",
+    "priority": "high",
+    "completed": false,
+    "completedAt": null
+  },
+  {
+    "Id": 5,
+    "title": "Harvest remaining carrots",
+    "description": "Final harvest before frost season",
+    "farmId": "3",
+    "cropId": "6",
+    "dueDate": "2024-12-25",
+    "priority": "high",
+    "completed": false,
+    "completedAt": null
+  },
+  {
+    "Id": 6,
+    "title": "Prepare soil for winter cover crop",
+    "description": "Till and prepare fields for cover crop planting",
+    "farmId": "3",
+    "cropId": null,
+    "dueDate": "2024-12-30",
+    "priority": "low",
+    "completed": false,
+    "completedAt": null
+  }
+]

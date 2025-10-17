@@ -1,0 +1,29 @@
+[
+  {
+    "Id": 1,
+    "name": "Green Valley Farm",
+    "location": "Sacramento Valley, CA",
+    "totalArea": 250,
+    "unit": "acres",
+    "notes": "Main production farm with irrigation system",
+    "createdAt": "2024-01-15T10:00:00Z"
+  },
+  {
+    "Id": 2,
+    "name": "Riverside Orchards",
+    "location": "Central Valley, CA",
+    "totalArea": 180,
+    "unit": "acres",
+    "notes": "Fruit orchard specializing in almonds and apples",
+    "createdAt": "2024-02-20T14:30:00Z"
+  },
+  {
+    "Id": 3,
+    "name": "Sunset Fields",
+    "location": "Sonoma County, CA",
+    "totalArea": 95,
+    "unit": "acres",
+    "notes": "Organic certification in progress",
+    "createdAt": "2024-03-10T09:15:00Z"
+  }
+]

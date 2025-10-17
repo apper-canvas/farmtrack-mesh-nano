@@ -1,0 +1,58 @@
+[
+  {
+    "Id": 1,
+    "date": "2024-12-01",
+    "category": "Seeds",
+    "amount": 450.00,
+    "description": "Corn seeds for spring planting",
+    "farmId": "1"
+  },
+  {
+    "Id": 2,
+    "date": "2024-12-03",
+    "category": "Fertilizer",
+    "amount": 280.50,
+    "description": "Organic fertilizer for tomato crop",
+    "farmId": "1"
+  },
+  {
+    "Id": 3,
+    "date": "2024-12-05",
+    "category": "Equipment",
+    "amount": 1250.00,
+    "description": "Irrigation system maintenance",
+    "farmId": "1"
+  },
+  {
+    "Id": 4,
+    "date": "2024-12-07",
+    "category": "Labor",
+    "amount": 960.00,
+    "description": "Seasonal workers for harvesting",
+    "farmId": "2"
+  },
+  {
+    "Id": 5,
+    "date": "2024-12-10",
+    "category": "Pesticides",
+    "amount": 320.75,
+    "description": "Organic pest control for apple trees",
+    "farmId": "2"
+  },
+  {
+    "Id": 6,
+    "date": "2024-12-12",
+    "category": "Equipment",
+    "amount": 180.00,
+    "description": "Pruning tools and maintenance",
+    "farmId": "3"
+  },
+  {
+    "Id": 7,
+    "date": "2024-12-15",
+    "category": "Utilities",
+    "amount": 425.30,
+    "description": "Electricity and water for irrigation",
+    "farmId": "1"
+  }
+]
