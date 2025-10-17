@@ -292,9 +292,9 @@ const getTasksByStatus = () => {
                 setFormData(prev => ({ ...prev, farmId: e.target.value, cropId: "" }));
               }}
             >
-              <option value="">Select a farm</option>
+<option value="">Select a farm</option>
               {farms.map(farm => (
-                <option key={farm.Id} value={farm.Id.toString()}>{farm.name}</option>
+                <option key={farm.Id} value={farm.Id.toString()}>{farm.name_c}</option>
               ))}
             </Select>
 
