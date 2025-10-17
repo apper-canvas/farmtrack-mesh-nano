@@ -3,10 +3,13 @@ import { Link, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import ApperIcon from "@/components/ApperIcon";
 import { cn } from "@/utils/cn";
+import { useAuth } from "@/layouts/Root";
+import Button from "@/components/atoms/Button";
 
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
+  const { logout } = useAuth();
 
   const navItems = [
     { path: "", label: "Dashboard", icon: "LayoutDashboard" },
@@ -22,6 +25,10 @@ const Header = () => {
       return location.pathname === "/";
     }
     return location.pathname.startsWith(`/${path}`);
+  };
+
+  const handleLogout = async () => {
+    await logout();
   };
 
   return (
@@ -57,9 +64,22 @@ const Header = () => {
                 {item.label}
               </Link>
             ))}
-          </nav>
+</nav>
 
-          {/* Mobile Menu Button */}
+          {/* Desktop Logout Button */}
+          <div className="hidden lg:block">
+            <Button
+              variant="ghost"
+              size="small"
+              onClick={handleLogout}
+              className="flex items-center"
+            >
+              <ApperIcon name="LogOut" size={18} className="mr-2" />
+              Logout
+            </Button>
+          </div>
+
+          {/* Mobile menu button */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             className="lg:hidden p-2 rounded-button text-gray-700 hover:bg-gray-100"
@@ -94,7 +114,22 @@ const Header = () => {
                 </Link>
               ))}
             </nav>
-          </motion.div>
+</motion.div>
+        )}
+
+        {/* Mobile Logout Button */}
+        {isMobileMenuOpen && (
+          <div className="lg:hidden border-t border-gray-200 pt-4 mt-2">
+            <Button
+              variant="ghost"
+              size="small"
+              onClick={handleLogout}
+              className="w-full flex items-center justify-center"
+            >
+              <ApperIcon name="LogOut" size={18} className="mr-2" />
+              Logout
+            </Button>
+          </div>
         )}
       </div>
     </header>
