@@ -446,8 +446,12 @@ const totalExpenses = expenses.reduce((sum, expense) => sum + (expense.amount ??
                   <div key={incomeItem.Id} className="flex justify-between items-center py-3 border-b border-gray-100 last:border-0">
                     <div>
                       <p className="font-medium text-gray-900">{getCropName(incomeItem.cropId)}</p>
-                      <p className="text-sm text-gray-600">
-                        {incomeItem.quantity} units • {format(new Date(incomeItem.date), 'MMM d, yyyy')}
+<p className="text-sm text-gray-600">
+                        {incomeItem.quantity} units • {(() => {
+                          if (!incomeItem.date) return 'N/A';
+                          const parsedDate = typeof incomeItem.date === 'string' ? parseISO(incomeItem.date) : new Date(incomeItem.date);
+                          return isValid(parsedDate) ? format(parsedDate, 'MMM d, yyyy') : 'Invalid date';
+                        })()}
                       </p>
                     </div>
                     <span className="font-semibold text-success">
