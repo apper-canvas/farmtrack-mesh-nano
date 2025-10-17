@@ -56,18 +56,18 @@ const Crops = () => {
     loadData();
   }, []);
 
-  const openModal = (crop = null) => {
+const openModal = (crop = null) => {
     if (crop) {
       setEditingCrop(crop);
       setFormData({
-        farmId: crop.farmId,
-        cropName: crop.cropName,
-        variety: crop.variety,
-        plantingDate: crop.plantingDate,
-        expectedHarvestDate: crop.expectedHarvestDate,
-        areaPlanted: crop.areaPlanted.toString(),
-        status: crop.status,
-        notes: crop.notes || ""
+        farmId: crop.farm_id_c?.Id || crop.farm_id_c,
+        cropName: crop.crop_name_c,
+        variety: crop.variety_c,
+        plantingDate: crop.planting_date_c,
+        expectedHarvestDate: crop.expected_harvest_date_c,
+        areaPlanted: crop.area_planted_c?.toString() || "",
+        status: crop.status_c,
+        notes: crop.notes_c || ""
       });
     } else {
       setEditingCrop(null);
@@ -151,14 +151,14 @@ const getStatusBadge = (status) => {
     return `${days} days`;
   };
 
-  const getFarmName = (farmId) => {
-    const farm = farms.find(f => f.Id.toString() === farmId);
+const getFarmName = (farmId) => {
+    const farm = farms.find(f => f.Id === parseInt(farmId));
     return farm ? farm.name : "Unknown Farm";
   };
 
-  const filteredCrops = crops.filter(crop => {
-    const matchesFarm = !filterFarm || crop.farmId === filterFarm;
-    const matchesStatus = !filterStatus || crop.status === filterStatus;
+const filteredCrops = crops.filter(crop => {
+    const matchesFarm = !filterFarm || (crop.farm_id_c?.Id || crop.farm_id_c) === parseInt(filterFarm);
+    const matchesStatus = !filterStatus || crop.status_c === filterStatus;
     return matchesFarm && matchesStatus;
   });
 
@@ -234,53 +234,53 @@ const getStatusBadge = (status) => {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredCrops.map((crop) => (
-            <Card key={crop.Id} className="p-6">
+<Card key={crop.Id} className="p-6">
               <div className="space-y-4">
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
-                    <h3 className="text-lg font-semibold text-gray-900">{crop.cropName}</h3>
-                    <p className="text-sm text-gray-600">{crop.variety}</p>
+                    <h3 className="text-lg font-semibold text-gray-900">{crop.crop_name_c}</h3>
+                    <p className="text-sm text-gray-600">{crop.variety_c}</p>
                   </div>
-                  <Badge {...getStatusBadge(crop.status)}>
-                    {getStatusBadge(crop.status).label}
+                  <Badge {...getStatusBadge(crop.status_c)}>
+                    {getStatusBadge(crop.status_c).label}
                   </Badge>
                 </div>
 
 <div className="space-y-2">
                   <div className="flex items-center text-sm text-gray-600">
                     <ApperIcon name="MapPin" size={14} className="mr-2" />
-                    {getFarmName(crop.farmId)}
+                    {getFarmName(crop.farm_id_c?.Id || crop.farm_id_c)}
                   </div>
                   
                   <div className="flex items-center text-sm text-gray-600">
                     <ApperIcon name="Calendar" size={14} className="mr-2" />
                     Planted: {(() => {
-                      if (!crop.plantingDate) return 'N/A';
-                      const parsedDate = typeof crop.plantingDate === 'string' ? parseISO(crop.plantingDate) : new Date(crop.plantingDate);
+                      if (!crop.planting_date_c) return 'N/A';
+                      const parsedDate = typeof crop.planting_date_c === 'string' ? parseISO(crop.planting_date_c) : new Date(crop.planting_date_c);
                       return isValid(parsedDate) ? format(parsedDate, 'MMM d, yyyy') : 'Invalid date';
                     })()}
                   </div>
 
                   <div className="flex items-center text-sm text-gray-600">
                     <ApperIcon name="Maximize2" size={14} className="mr-2" />
-                    Area: {crop.areaPlanted} acres
+                    Area: {crop.area_planted_c} acres
                   </div>
                 </div>
 
-                {crop.expectedHarvestDate && crop.status !== 'harvested' && (
+{crop.expected_harvest_date_c && crop.status_c !== 'harvested' && (
                   <div className="bg-gray-50 rounded-button p-3">
                     <div className="flex justify-between items-center text-sm">
                       <span className="text-gray-600">Days to Harvest:</span>
                       <span className="font-semibold text-gray-900">
-                        {getDaysToHarvest(crop.expectedHarvestDate)}
+                        {getDaysToHarvest(crop.expected_harvest_date_c)}
                       </span>
                     </div>
                   </div>
                 )}
 
-                {crop.notes && (
+{crop.notes_c && (
                   <div className="pt-3 border-t border-gray-100">
-                    <p className="text-sm text-gray-600">{crop.notes}</p>
+                    <p className="text-sm text-gray-600">{crop.notes_c}</p>
                   </div>
                 )}
 
